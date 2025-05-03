@@ -6,10 +6,12 @@ import mmh3
 import os
 import requests
 import sys
+import shodan
 from pathlib import Path
 from multiprocessing.pool import ThreadPool
 from time import time as timer
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
 
 # Disable SSL warnings
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -575,6 +577,19 @@ def analyze_favicons(urls, append_favicon):
 
     return results_map
 
+def query_shodan_by_hash(favicon_hash, api_key):
+    try:
+        api = shodan.Shodan(api_key)
+        query = f"http.favicon.hash:{favicon_hash}"
+        results = api.search(query)
+        print(f"\n\u001b[34m[SHODAN] Results for hash {favicon_hash}:\u001b[0m")
+        for match in results['matches']:
+            ip = match.get('ip_str')
+            port = match.get('port')
+            hostnames = match.get('hostnames', [])
+            print(f" - {ip}:{port} {' '.join(hostnames)}")
+    except Exception as e:
+        print(f"\u001b[31m[SHODAN ERROR]\u001b[0m Could not query Shodan: {e}")
 
 def print_results(results_map):
     print("\n" + "-" * 70)
@@ -602,14 +617,6 @@ def print_uncover(results_map):
         if hash_val != 0:
             print(f"\u001b[34m[uncover]\u001b[0m uncover -q 'http.favicon.hash:{hash_val}' -e shodan,fofa,censys -silent")
 
-def print_shodan(results_map):
-    print("\n" + "-" * 70)
-    print("\u001b[32m[Shodan Dorks] - \u001b[0m\n")
-    for hash_val in results_map:
-        if hash_val != 0:
-            print(f"\u001b[34m[DORK]\u001b[0m org:\"Target-Name\" http.favicon.hash:{hash_val}")
-
-
 def save_results(results_map, output_dir):
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -632,9 +639,11 @@ def print_summary(results_map):
 def main():
     parser = argparse.ArgumentParser(description="FavFreak2.0 - Favicon Hash Mapper (Modernized)")
     parser.add_argument("--output", help="Output directory for hash result files")
-    parser.add_argument("--shodan", help="Print Shodan dorks", action="store_true")
     parser.add_argument('--uncover', help='Uncover output mode for uncover tool from project discovery', action='store_true')
     parser.add_argument("--no-favicon", help="Do NOT append /favicon.ico to URLs", action="store_true")
+    parser.add_argument("--shodan", help="Fetch IPs from Shodan using favicon hash", action="store_true")
+    parser.add_argument("--api-key", help="Shodan API key (can also use SHODAN_API_KEY env var)")
+
     args = parser.parse_args()
 
     os.system("cls" if os.name == "nt" else "clear")
@@ -656,7 +665,13 @@ def main():
         print_uncover(results_map)
 
     if args.shodan:
-        print_shodan(results_map)
+        api_key = args.api_key or os.getenv("SHODAN_API_KEY")
+        if not api_key:
+            print("\u001b[31m[ERROR]\u001b[0m Shodan API key is required (pass via --api-key or set SHODAN_API_KEY)")
+        else:
+            for hash_val in results_map.keys():
+                if hash_val != 0:
+                    query_shodan_by_hash(hash_val, api_key)
 
     if args.output:
         save_results(results_map, args.output)
