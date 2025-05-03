@@ -37,7 +37,7 @@ Clone the repo and install the dependencies:
 
 ```bash
 
-git clone https://github.com/yourusername/favfreak2.git
+git clone https://github.com/Liquid1998/favfreak2.git
 
 cd favfreak2
 
