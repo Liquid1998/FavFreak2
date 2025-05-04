@@ -115,6 +115,11 @@ Basic usage results:
      https://google.com
 
 ----------------------------------------------------------------------
+[Uncover mode output] - 
+
+[uncover] uncover -q 'http.favicon.hash:708578229' -e shodan,fofa,censys -silent
+
+----------------------------------------------------------------------
 [Summary]
 
  Count      Hash
