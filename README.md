@@ -35,7 +35,7 @@
 - ⚡ **Multi-threaded favicon fetching**
 - 🔐 **Favicon hashing using mmh3**
 - 📚 **Built-in fingerprint matching**
-- 🧭 **Optional Shodan dork generation**
+- 🧭 **Optional Uncover mode output and Shodan database query**
 - 💾 **Output hashes to files**
 - 🔧 **`--no-favicon` option for manual URLs if your input URLs already point to a favicon**
 - ✅ **Python >=3.9 compatible and cleaner codebase**
