@@ -72,9 +72,10 @@ cat urls.txt | python3 favfreak2.py --output output_dir --uncover --shodan --api
 
 ## Results
 
-Basic usage results:
+Basic usage results with uncover output mode:
 
 ```
+cat url.txt | python3 favfreak2.py --uncover
 
 /$$$$$$$$                  /$$$$$$$$                          /$$        /$$$$$$      /$$$$$$ 
 | $$_____/                 | $$_____/                         | $$       /$$__  $$    /$$$_  $$
