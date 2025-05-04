@@ -26,7 +26,7 @@
 
 **FavFreak v2.0** is a modern, fast, and flexible tool that identifies favicon hashes for given URLS file. It's ideal for bug bounty hunters, penetration testers, and red teamers looking to rapidly identify exposed services or tech stacks.
 
-> 🧪 Inspired by FavFreak of Devansh Batham, with Uncover mode output and Shodan dorks generator ❤️.
+> 🧪 Inspired by FavFreak of Devansh Batham, with Uncover mode output and Shodan query output using API_KEY ❤️.
 
 ---
 
@@ -53,3 +53,19 @@ git clone https://github.com/Liquid1998/favfreak2.git
 cd favfreak2
 
 pip install -r requirements.txt
+```
+
+## USAGE
+
+Basic Usage:
+
+```bash
+
+cat urls.txt | python3 favfreak2.py --output output_dir
+```
+If you want a Uncover mode output and want to query shodan database
+
+```bash
+
+cat urls.txt | python3 favfreak2.py --output output_dir --uncover --shodan --api-key API_KEY
+```
